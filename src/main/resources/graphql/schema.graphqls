@@ -1,0 +1,262 @@
+# schema.graphqls
+
+scalar Date
+
+type Query {
+    # Usuario queries
+    usuarios(page: Int = 0, size: Int = 10): UsuarioPage!
+    usuario(id: ID!): Usuario
+    usuarioByEmail(email: String!): Usuario
+
+    # Miembro queries
+    miembros(page: Int = 0, size: Int = 10): MiembroPage!
+    miembro(id: ID!): Miembro
+    miembroByCi(ci: String!): Miembro
+    buscarMiembros(nombre: String!, page: Int = 0, size: Int = 10): MiembroPage!
+
+    # Prestamo queries
+    prestamos(page: Int = 0, size: Int = 10): PrestamoPage!
+    prestamo(id: ID!): Prestamo
+    prestamosPorMiembro(miembroId: ID!): [Prestamo!]!
+    prestamosVencidos: [Prestamo!]!
+
+    # Reserva queries
+    reservas(page: Int = 0, size: Int = 10): ReservaPage!
+    reserva(id: ID!): Reserva
+    reservasPorMiembro(miembroId: ID!): [Reserva!]!
+
+    # Ejemplar queries
+    ejemplares(page: Int = 0, size: Int = 10): EjemplarPage!
+    ejemplar(id: ID!): Ejemplar
+    buscarEjemplares(nombre: String!, page: Int = 0, size: Int = 10): EjemplarPage!
+    ejemplaresPorTipo(tipoId: ID!): [Ejemplar!]!
+    ejemplaresPorAutor(autorId: ID!): [Ejemplar!]!
+    ejemplaresDisponibles: [Ejemplar!]!
+
+    # Autor queries
+    autores(page: Int = 0, size: Int = 10): AutorPage!
+    autor(id: ID!): Autor
+    buscarAutores(nombre: String!, page: Int = 0, size: Int = 10): AutorPage!
+    autoresPorNacionalidad(nacionalidad: String!, page: Int = 0, size: Int = 10): AutorPage!
+    todosLosAutores: [Autor!]!
+
+    # Tipo queries
+    tipos: [Tipo!]!
+    tipo(id: ID!): Tipo
+
+    # Estado queries
+    estados: [Estado!]!
+    estado(id: ID!): Estado
+
+    # Rol queries
+    roles: [Rol!]!
+    rol(id: ID!): Rol
+}
+
+type Mutation {
+    # Usuario mutations
+    crearUsuario(input: CreateUsuarioInput!): Usuario!
+    actualizarUsuario(id: ID!, input: CreateUsuarioInput!): Usuario!
+    eliminarUsuario(id: ID!): Boolean!
+
+    # Miembro mutations
+    crearMiembro(input: CreateMiembroInput!): Miembro!
+    actualizarMiembro(id: ID!, input: CreateMiembroInput!): Miembro!
+    eliminarMiembro(id: ID!): Boolean!
+
+    # Prestamo mutations
+    crearPrestamo(input: CreatePrestamoInput!): Prestamo!
+    eliminarPrestamo(id: ID!): Boolean!
+
+    # Ejemplar mutations
+    crearEjemplar(input: CreateEjemplarInput!): Ejemplar!
+    actualizarEjemplar(id: ID!, input: CreateEjemplarInput!): Ejemplar!
+    eliminarEjemplar(id: ID!): Boolean!
+}
+
+# Types
+type Usuario {
+    id: ID!
+    name: String!
+    email: String!
+    rol: Rol
+}
+
+type Rol {
+    id: ID!
+    name: String!
+}
+
+type Miembro {
+    id: ID!
+    ci: String!
+    nombre: String!
+    direccion: String
+    celular: Int
+    sexo: String
+    edad: Int
+    usuario: Usuario
+}
+
+type Prestamo {
+    id: ID!
+    fechaInicio: Date!
+    fechaDevolucion: Date!
+    miembro: Miembro!
+    detalles: [DetallePrestamo!]!
+}
+
+type DetallePrestamo {
+    id: ID!
+    cantidad: Int!
+    ejemplar: Ejemplar!
+}
+
+type Reserva {
+    id: ID!
+    fechaRegistro: Date!
+    fechaRecojo: Date!
+    miembro: Miembro!
+    detalles: [DetalleReserva!]!
+}
+
+type DetalleReserva {
+    id: ID!
+    cantidad: Int!
+    ejemplar: Ejemplar!
+}
+
+type Ejemplar {
+    id: ID!
+    nombre: String!
+    stock: Int!
+    editorial: String
+    tipo: Tipo
+    autor: Autor
+}
+
+type DetalleEstado {
+    id: ID!
+    fecha: Date!
+    estado: Estado!
+    ejemplar: Ejemplar!
+}
+
+type Estado {
+    id: ID!
+    nombre: String!
+    descripcion: String
+}
+
+type Tipo {
+    id: ID!
+    nombre: String!
+    descripcion: String
+}
+
+type Autor {
+    id: ID!
+    nombre: String!
+    nacionalidad: String
+}
+
+# Input Types
+input CreateUsuarioInput {
+    name: String!
+    email: String!
+    password: String!
+    rolId: ID
+}
+
+input CreateMiembroInput {
+    ci: String!
+    nombre: String!
+    direccion: String
+    celular: Int
+    sexo: String
+    edad: Int
+    usuarioId: ID
+}
+
+input CreatePrestamoInput {
+    fechaInicio: Date!
+    fechaDevolucion: Date!
+    miembroId: ID!
+    detalles: [CreateDetallePrestamoInput!]!
+}
+
+input CreateDetallePrestamoInput {
+    cantidad: Int!
+    ejemplarId: ID!
+}
+
+input CreateEjemplarInput {
+    nombre: String!
+    stock: Int!
+    editorial: String
+    tipoId: ID
+    autorId: ID
+}
+
+# Pagination Types
+type UsuarioPage {
+    content: [Usuario!]!
+    totalElements: Long!
+    totalPages: Int!
+    size: Int!
+    number: Int!
+    first: Boolean!
+    last: Boolean!
+}
+
+type MiembroPage {
+    content: [Miembro!]!
+    totalElements: Long!
+    totalPages: Int!
+    size: Int!
+    number: Int!
+    first: Boolean!
+    last: Boolean!
+}
+
+type PrestamoPage {
+    content: [Prestamo!]!
+    totalElements: Long!
+    totalPages: Int!
+    size: Int!
+    number: Int!
+    first: Boolean!
+    last: Boolean!
+}
+
+type ReservaPage {
+    content: [Reserva!]!
+    totalElements: Long!
+    totalPages: Int!
+    size: Int!
+    number: Int!
+    first: Boolean!
+    last: Boolean!
+}
+
+type EjemplarPage {
+    content: [Ejemplar!]!
+    totalElements: Long!
+    totalPages: Int!
+    size: Int!
+    number: Int!
+    first: Boolean!
+    last: Boolean!
+}
+
+type AutorPage {
+    content: [Autor!]!
+    totalElements: Long!
+    totalPages: Int!
+    size: Int!
+    number: Int!
+    first: Boolean!
+    last: Boolean!
+}
+
+scalar Long
