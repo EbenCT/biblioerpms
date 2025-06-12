@@ -1,6 +1,8 @@
 # schema.graphqls
 
 scalar Date
+scalar Long
+scalar JSON
 
 type Query {
     # Usuario queries
@@ -72,6 +74,9 @@ type Mutation {
     crearEjemplar(input: CreateEjemplarInput!): Ejemplar!
     actualizarEjemplar(id: ID!, input: CreateEjemplarInput!): Ejemplar!
     eliminarEjemplar(id: ID!): Boolean!
+
+    # Chat mutations
+    sendChatMessage(input: ChatInput!): ChatMessage!
 }
 
 # Types
@@ -160,6 +165,16 @@ type Autor {
     nacionalidad: String
 }
 
+# Chat Types
+type ChatMessage {
+    message: String!
+    intent: String!
+    action: String!
+    confidence: Float!
+    parameters: JSON
+    success: Boolean!
+}
+
 # Input Types
 input CreateUsuarioInput {
     name: String!
@@ -196,6 +211,11 @@ input CreateEjemplarInput {
     editorial: String
     tipoId: ID
     autorId: ID
+}
+
+input ChatInput {
+    message: String!
+    userId: String
 }
 
 # Pagination Types
@@ -258,5 +278,3 @@ type AutorPage {
     first: Boolean!
     last: Boolean!
 }
-
-scalar Long

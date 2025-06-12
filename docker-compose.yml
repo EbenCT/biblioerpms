@@ -5,10 +5,23 @@ services:
     image: postgres:14.4
     restart: always
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: biblioerpdb
-    container_name: biblioerpms
+    container_name: biblioerpms1
     volumes:
       - ./postgres:/var/lib/postgresql/data
+
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/biblioerpdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - "8080:8080"
+    restart: always
+

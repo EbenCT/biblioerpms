@@ -105,6 +105,12 @@
 			<version>0.12.3</version>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- DialogFlowES -->
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-dialogflow</artifactId>
+			<version>4.30.0</version>
+		</dependency>
 
 		<!-- Test -->
 		<dependency>

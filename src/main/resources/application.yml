@@ -3,9 +3,9 @@ spring:
     name: biblioerpms
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/biblioerpdb
-    username: postgres
-    password: password
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -43,3 +43,8 @@ logging:
 jwt:
   secret: mySecretKey123456789012345678901234567890
   expiration: 86400000 # 24 hours in milliseconds
+
+# Configuración de Dialogflow
+dialogflow:
+  project-id: biblioteca-byxl
+  credentials-path: src/main/resources/dialogflow_credentials.json  # Ruta a tu archivo JSON
